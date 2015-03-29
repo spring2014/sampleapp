@@ -1,6 +1,7 @@
 package com.sampleapp.spring2014;
 
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,11 +18,24 @@ public class BaseController
     private static final String VIEW_INDEX = "index";
     private final static org.slf4j.Logger logger = LoggerFactory.getLogger(BaseController.class);
 
+    /**
+     * dependency injection - 3 common methods
+     *
+     * 1. constructor injection
+     * 2. setter injection
+     * 3. interface injection
+     *
+     * 4. annotation
+     */
+    @Autowired
+    private CounterService counterService;
+
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String welcome(ModelMap model) {
 
+        counter = counterService.count(counter);
         model.addAttribute("message", "Welcome");
-        model.addAttribute("counter", ++counter);
+        model.addAttribute("counter", counter);
         logger.debug("[welcome] counter : {}", counter);
 
         // Spring uses InternalResourceViewResolver and return back index.jsp
@@ -31,9 +45,9 @@ public class BaseController
 
     @RequestMapping(value = "/{name}", method = RequestMethod.GET)
     public String welcomeName(@PathVariable String name, ModelMap model) {
-
+        counter = counterService.count(counter);
         model.addAttribute("message", "Welcome " + name);
-        model.addAttribute("counter", ++counter);
+        model.addAttribute("counter", counter);
         logger.debug("[welcomeName] counter : {}", counter);
         return VIEW_INDEX;
 
